@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediRAG — Sign in</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg2); }
+
+    .auth-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── LEFT PANEL ── */
+    .auth-left {
+      background: var(--primary);
+      padding: 48px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 20%, rgba(180,83,9,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 10% 90%, rgba(180,83,9,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .auth-left-content { position: relative; z-index: 1; }
+
+    .auth-left-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 72px;
+    }
+
+    .auth-left h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: #fafaf9;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .auth-left p {
+      font-size: 0.95rem;
+      color: #a8a29e;
+      line-height: 1.7;
+      max-width: 380px;
+    }
+
+    .auth-left-footer { position: relative; z-index: 1; }
+
+    .auth-trust {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .auth-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: #78716c;
+    }
+
+    .trust-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .auth-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+      background: var(--bg);
+    }
+
+    .auth-form-wrap {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-form-wrap h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+
+    .auth-form-wrap .sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .auth-form-wrap .sub a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 30px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .auth-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+
+    .divider {
+      text-align: center;
+      position: relative;
+      margin: 18px 0;
+      font-size: 0.78rem;
+      color: var(--subtle);
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: calc(50% - 24px);
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    @media (max-width: 720px) {
+      .auth-layout { grid-template-columns: 1fr; }
+      .auth-left   { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-layout">
+
+  <!-- LEFT PANEL -->
+  <div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-content">
+      <div class="auth-left-logo">
+        <svg width="120" height="30" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="3" width="24" height="24" rx="7" fill="#b45309"/>
+          <rect x="10.5" y="7" width="3" height="16" rx="1.5" fill="white"/>
+          <rect x="5" y="12.5" width="14" height="3" rx="1.5" fill="white"/>
+          <circle cx="21" cy="7" r="3.5" fill="#fef3c7"/>
+          <text x="32" y="21" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="17" fill="#fafaf9">Medi</text>
+          <text x="72" y="21" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="17" fill="#b45309">RAG</text>
+        </svg>
+      </div>
+
+      <h2>Medical knowledge<br/>at your fingertips</h2>
+      <p>
+        Ask complex questions about conditions, symptoms, and treatments.
+        Get answers grounded in curated medical literature — privately and instantly.
+      </p>
+    </div>
+
+    <div class="auth-left-footer">
+      <div class="auth-trust">
+        <div class="auth-trust-item">
+          <div class="trust-dot"></div>
+          Runs 100% locally — no cloud dependency
+        </div>
+        <div class="auth-trust-item">
+          <div class="trust-dot"></div>
+          Answers sourced directly from medical PDFs
+        </div>
+        <div class="auth-trust-item">
+          <div class="trust-dot"></div>
+          Chat history saved securely per user account
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <a href="index.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to home
+      </a>
+
+      <h1 id="form-title">Welcome back</h1>
+      <p class="sub" id="form-sub">Don't have an account? <a href="#" onclick="switchTab('signup');return false;">Sign up free</a></p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login"  onclick="switchTab('login')">Login</button>
+        <button class="auth-tab"        id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <div id="alert" class="alert alert-error"></div>
+
+      <!-- LOGIN -->
+      <form class="auth-form active" id="form-login" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="l-email" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="l-pass" placeholder="Enter your password" required/>
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn-login" style="width:100%;padding:12px;font-size:0.95rem;border-radius:9px;margin-top:4px;">
+          Sign in
+        </button>
+      </form>
+
+      <!-- SIGNUP -->
+      <form class="auth-form" id="form-signup" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" id="s-name" placeholder="Your name" required/>
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="s-email" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="s-pass" placeholder="Min. 6 characters" required/>
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn-signup" style="width:100%;padding:12px;font-size:0.95rem;border-radius:9px;margin-top:4px;">
+          Create account
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Pre-select tab from URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("tab") === "signup") switchTab("signup");
+
+  // Redirect if already logged in
+  if (localStorage.getItem("token")) window.location.href = "chat.html";
+
+  function switchTab(tab) {
+    const isLogin = tab === "login";
+    document.getElementById("tab-login").classList.toggle("active", isLogin);
+    document.getElementById("tab-signup").classList.toggle("active", !isLogin);
+    document.getElementById("form-login").classList.toggle("active", isLogin);
+    document.getElementById("form-signup").classList.toggle("active", !isLogin);
+    document.getElementById("form-title").textContent = isLogin ? "Welcome back" : "Create your account";
+    document.getElementById("form-sub").innerHTML = isLogin
+      ? `Don't have an account? <a href="#" onclick="switchTab('signup');return false;">Sign up free</a>`
+      : `Already have an account? <a href="#" onclick="switchTab('login');return false;">Sign in</a>`;
+    hideAlert();
+  }
+
+  function showAlert(msg) {
+    const el = document.getElementById("alert");
+    el.textContent = msg;
+    el.className = "alert alert-error show";
+  }
+
+  function hideAlert() {
+    document.getElementById("alert").className = "alert alert-error";
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    hideAlert();
+    const btn = document.getElementById("btn-login");
+    btn.disabled = true; btn.textContent = "Signing in...";
+    try {
+      const res  = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: document.getElementById("l-email").value.trim(), password: document.getElementById("l-pass").value })
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert(data.error); return; }
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.name);
+      window.location.href = "chat.html";
+    } catch { showAlert("Could not reach the server."); }
+    finally { btn.disabled = false; btn.textContent = "Sign in"; }
+  }
+
+  async function handleSignup(e) {
+    e.preventDefault();
+    hideAlert();
+    const btn = document.getElementById("btn-signup");
+    btn.disabled = true; btn.textContent = "Creating account...";
+    try {
+      const res  = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name:     document.getElementById("s-name").value.trim(),
+          email:    document.getElementById("s-email").value.trim(),
+          password: document.getElementById("s-pass").value
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert(data.error); return; }
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.name);
+      window.location.href = "chat.html";
+    } catch { showAlert("Could not reach the server."); }
+    finally { btn.disabled = false; btn.textContent = "Create account"; }
+  }
+</script>
+</body>
+</html>

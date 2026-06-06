@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediRAG — Settings</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    body { display: flex; flex-direction: column; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      height: 56px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 50;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 7px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .back-btn:hover { background: var(--surface2); color: var(--text); }
+    .back-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .topbar-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── LAYOUT ── */
+    .settings-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SETTINGS NAV ── */
+    .settings-nav {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 12px;
+      overflow-y: auto;
+    }
+
+    .settings-nav-section {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--subtle);
+      padding: 0 10px;
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
+    .settings-nav-section:first-child { margin-top: 0; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+    .nav-item svg {
+      width: 15px; height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── SETTINGS CONTENT ── */
+    .settings-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 36px 48px;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .panel-header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 5px;
+    }
+
+    .panel-header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* Card */
+    .settings-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .settings-card h3 {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .settings-card .card-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+
+    /* Profile avatar section */
+    .profile-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .big-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .avatar-info h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .avatar-info p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* Inline form row */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .toggle-info h4 { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .toggle-info p  { font-size: 0.78rem; color: var(--muted); }
+
+    .toggle {
+      width: 42px; height: 24px;
+      background: var(--border2);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      border: none;
+    }
+    .toggle.on { background: var(--accent); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 3px; left: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle.on::after { transform: translateX(18px); }
+
+    /* Stat row */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-box .s-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-box .s-lbl {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Danger zone */
+    .danger-zone {
+      border-color: #fecaca;
+      background: var(--danger-bg);
+    }
+
+    .danger-zone h3 { color: var(--danger); }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="chat.html" class="back-btn">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to chat
+    </a>
+    <span style="color:var(--border);user-select:none;">|</span>
+    <span class="topbar-title">Settings</span>
+  </div>
+  <a href="index.html">
+    <svg width="100" height="24" viewBox="0 0 100 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="2" width="20" height="20" rx="5.5" fill="#b45309"/>
+      <rect x="8.5" y="5" width="3" height="14" rx="1.5" fill="white"/>
+      <rect x="4" y="10.5" width="12" height="3" rx="1.5" fill="white"/>
+      <circle cx="17" cy="5" r="2.8" fill="#fef3c7"/>
+      <text x="27" y="17" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="14" fill="#1c1917">Medi</text>
+      <text x="60" y="17" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="14" fill="#b45309">RAG</text>
+    </svg>
+  </a>
+</div>
+
+<div class="settings-layout">
+
+  <!-- NAV -->
+  <nav class="settings-nav">
+    <div class="settings-nav-section">Account</div>
+    <button class="nav-item active" onclick="showPanel('profile', this)">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </button>
+    <button class="nav-item" onclick="showPanel('security', this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Security
+    </button>
+
+    <div class="settings-nav-section">Preferences</div>
+    <button class="nav-item" onclick="showPanel('preferences', this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Preferences
+    </button>
+
+    <div class="settings-nav-section">Data</div>
+    <button class="nav-item" onclick="showPanel('data', this)">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Data &amp; History
+    </button>
+
+    <div class="settings-nav-section">About</div>
+    <button class="nav-item" onclick="showPanel('about', this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About MediRAG
+    </button>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="settings-content">
+
+    <!-- ── PROFILE ── -->
+    <div class="panel active" id="panel-profile">
+      <div class="panel-header">
+        <h2>Profile</h2>
+        <p>Manage your account name and email address.</p>
+      </div>
+
+      <div id="profile-alert" class="alert"></div>
+
+      <div class="settings-card">
+        <div class="profile-avatar-row">
+          <div class="big-avatar" id="bigAvatar">U</div>
+          <div class="avatar-info">
+            <h4 id="avatarName">Loading...</h4>
+            <p id="avatarEmail">—</p>
+          </div>
+        </div>
+
+        <form onsubmit="saveProfile(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full name</label>
+              <input type="text" id="p-name" placeholder="Your name" required/>
+            </div>
+            <div class="form-group">
+              <label>Email address</label>
+              <input type="email" id="p-email" placeholder="you@example.com" required/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── SECURITY ── -->
+    <div class="panel" id="panel-security">
+      <div class="panel-header">
+        <h2>Security</h2>
+        <p>Change your password to keep your account safe.</p>
+      </div>
+
+      <div id="sec-alert" class="alert"></div>
+
+      <div class="settings-card">
+        <h3>Change password</h3>
+        <p class="card-desc">Choose a strong password of at least 6 characters.</p>
+        <form onsubmit="changePassword(event)">
+          <div class="form-group">
+            <label>Current password</label>
+            <input type="password" id="s-current" placeholder="Enter current password" required/>
+          </div>
+          <div class="form-group">
+            <label>New password</label>
+            <input type="password" id="s-new" placeholder="Min. 6 characters" required/>
+          </div>
+          <div class="form-group">
+            <label>Confirm new password</label>
+            <input type="password" id="s-confirm" placeholder="Repeat new password" required/>
+          </div>
+          <button type="submit" class="btn btn-primary" id="changePassBtn">Update password</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── PREFERENCES ── -->
+    <div class="panel" id="panel-preferences">
+      <div class="panel-header">
+        <h2>Preferences</h2>
+        <p>Customize how MediRAG behaves for you.</p>
+      </div>
+
+      <div class="settings-card">
+        <h3>Chat behavior</h3>
+        <p class="card-desc">Control how the chat interface responds.</p>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Enter to send</h4>
+            <p>Press Enter to send a message. Use Shift+Enter for a new line.</p>
+          </div>
+          <button class="toggle on" id="toggleEnter" onclick="this.classList.toggle('on')"></button>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Auto-scroll to latest</h4>
+            <p>Automatically scroll to the newest message when the chat updates.</p>
+          </div>
+          <button class="toggle on" id="toggleScroll" onclick="this.classList.toggle('on')"></button>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h4>Show message timestamps</h4>
+            <p>Display the time each message was sent below the bubble.</p>
+          </div>
+          <button class="toggle on" id="toggleTs" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Model settings</h3>
+        <p class="card-desc">Configure the local LLM used for generating answers.</p>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Model name</label>
+          <input type="text" value="phi4-mini:latest" readonly style="background:var(--surface2);color:var(--muted);cursor:not-allowed;"/>
+        </div>
+        <p style="font-size:0.75rem;color:var(--subtle);margin-top:8px;">Model selection is configured in app.py.</p>
+      </div>
+    </div>
+
+    <!-- ── DATA ── -->
+    <div class="panel" id="panel-data">
+      <div class="panel-header">
+        <h2>Data &amp; History</h2>
+        <p>View and manage your conversation data.</p>
+      </div>
+
+      <div id="data-alert" class="alert"></div>
+
+      <div class="settings-card">
+        <h3>Your usage</h3>
+        <p class="card-desc">Statistics about your activity on MediRAG.</p>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="s-val" id="stat-msgs">—</div>
+            <div class="s-lbl">Total messages</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" id="stat-questions">—</div>
+            <div class="s-lbl">Questions asked</div>
+          </div>
+          <div class="stat-box">
+            <div class="s-val" id="stat-days">—</div>
+            <div class="s-lbl">Days active</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card danger-zone">
+        <h3>Clear all history</h3>
+        <p class="card-desc">Permanently delete all your conversation history. This action cannot be undone.</p>
+        <button class="btn btn-danger" onclick="showClearModal()">Clear all conversations</button>
+      </div>
+    </div>
+
+    <!-- ── ABOUT ── -->
+    <div class="panel" id="panel-about">
+      <div class="panel-header">
+        <h2>About MediRAG</h2>
+        <p>Technical details about this application.</p>
+      </div>
+
+      <div class="settings-card">
+        <h3>What is MediRAG?</h3>
+        <p class="card-desc">
+          MediRAG is a local AI assistant that answers medical questions by searching
+          a curated set of medical PDFs using Retrieval-Augmented Generation (RAG).
+          Your data stays on your device — no cloud APIs are used.
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px;">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px;">Embeddings</div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text);">all-MiniLM-L6-v2</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px;">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px;">LLM</div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text);">phi4-mini via Ollama</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px;">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px;">Vector store</div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text);">FAISS (local)</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px;">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px;">Backend</div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text);">Flask + SQLite</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Knowledge base</h3>
+        <p class="card-desc">Topics covered by the current document set.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Diabetes</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Hypertension</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Asthma</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Anaemia</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Arthritis</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Migraine</span>
+          <span style="background:var(--accent-light);color:var(--accent);padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:600;border:1px solid rgba(180,83,9,0.15);">Heart Disease</span>
+        </div>
+      </div>
+
+      <div class="settings-card" style="background:var(--surface2);">
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">
+          MediRAG is intended for informational purposes only and does not provide professional medical advice, diagnosis, or treatment.
+          Always consult a qualified healthcare provider for medical concerns.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Clear confirm modal -->
+<div class="modal-overlay" id="clearModal">
+  <div class="modal">
+    <div class="modal-title">Clear all conversations?</div>
+    <div class="modal-body">This will permanently delete your entire chat history. This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="hideClearModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="doClearHistory()">Clear everything</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const token    = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName") || "User";
+
+  if (!token) window.location.href = "auth.html";
+
+  // ── PANEL NAV ──
+  function showPanel(id, btn) {
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+    document.getElementById("panel-" + id).classList.add("active");
+    btn.classList.add("active");
+    if (id === "data") loadStats();
+  }
+
+  // ── LOAD PROFILE ──
+  async function loadProfile() {
+    try {
+      const res  = await fetch("/api/me", { headers: { Authorization: "Bearer " + token } });
+      if (!res.ok) return;
+      const data = await res.json();
+      document.getElementById("bigAvatar").textContent  = data.name[0].toUpperCase();
+      document.getElementById("avatarName").textContent = data.name;
+      document.getElementById("avatarEmail").textContent = data.email;
+      document.getElementById("p-name").value  = data.name;
+      document.getElementById("p-email").value = data.email;
+    } catch {}
+  }
+
+  // ── SAVE PROFILE ──
+  async function saveProfile(e) {
+    e.preventDefault();
+    const btn = document.getElementById("saveProfileBtn");
+    btn.disabled = true; btn.textContent = "Saving...";
+    try {
+      const res  = await fetch("/api/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({
+          name:  document.getElementById("p-name").value.trim(),
+          email: document.getElementById("p-email").value.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert("profile-alert", data.error, "error"); return; }
+      localStorage.setItem("userName", data.name);
+      showAlert("profile-alert", "Profile updated successfully.", "success");
+      document.getElementById("bigAvatar").textContent  = data.name[0].toUpperCase();
+      document.getElementById("avatarName").textContent = data.name;
+      document.getElementById("avatarEmail").textContent = data.email;
+    } catch { showAlert("profile-alert", "Could not reach server.", "error"); }
+    finally { btn.disabled = false; btn.textContent = "Save changes"; }
+  }
+
+  // ── CHANGE PASSWORD ──
+  async function changePassword(e) {
+    e.preventDefault();
+    const newPass = document.getElementById("s-new").value;
+    const confirm = document.getElementById("s-confirm").value;
+    if (newPass !== confirm) { showAlert("sec-alert", "New passwords do not match.", "error"); return; }
+    const btn = document.getElementById("changePassBtn");
+    btn.disabled = true; btn.textContent = "Updating...";
+    try {
+      const res  = await fetch("/api/me/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({
+          current_password: document.getElementById("s-current").value,
+          new_password:     newPass
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert("sec-alert", data.error, "error"); return; }
+      showAlert("sec-alert", "Password updated successfully.", "success");
+      e.target.reset();
+    } catch { showAlert("sec-alert", "Could not reach server.", "error"); }
+    finally { btn.disabled = false; btn.textContent = "Update password"; }
+  }
+
+  // ── STATS ──
+  async function loadStats() {
+    try {
+      const res  = await fetch("/api/history", { headers: { Authorization: "Bearer " + token } });
+      const data = await res.json();
+      const total    = data.length;
+      const questions = data.filter(m => m.role === "user").length;
+      const days = new Set(data.map(m => m.timestamp ? m.timestamp.substring(0, 10) : "")).size;
+      document.getElementById("stat-msgs").textContent      = total;
+      document.getElementById("stat-questions").textContent = questions;
+      document.getElementById("stat-days").textContent      = days;
+    } catch {}
+  }
+
+  // ── CLEAR HISTORY ──
+  function showClearModal() { document.getElementById("clearModal").classList.add("show"); }
+  function hideClearModal() { document.getElementById("clearModal").classList.remove("show"); }
+
+  async function doClearHistory() {
+    hideClearModal();
+    try {
+      await fetch("/api/history", { method: "DELETE", headers: { Authorization: "Bearer " + token } });
+      showAlert("data-alert", "All conversation history has been cleared.", "success");
+      loadStats();
+    } catch { showAlert("data-alert", "Could not reach server.", "error"); }
+  }
+
+  // ── ALERT HELPER ──
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = `alert alert-${type} show`;
+    setTimeout(() => { el.className = `alert alert-${type}`; }, 4000);
+  }
+
+  // Init
+  loadProfile();
+</script>
+</body>
+</html>
